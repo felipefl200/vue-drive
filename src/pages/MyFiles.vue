@@ -7,7 +7,7 @@
       <button class="rounded-button">
         <icon-arrow-up />
       </button>
-    </div>   
+    </div>
     <FilesList :files="files" />
   </div>
 </template>
@@ -15,27 +15,24 @@
 <script>
 import filesApi from "../api/files";
 import ActionBar from "../components/ActionBar.vue";
-import IconTypeCommon from "../components/icons/IconTypeCommon.vue";
-import FilesList from '../components/files/FilesList.vue'
-
+import FilesList from "../components/files/FilesList.vue";
+import { ref, onMounted } from "vue";
+const fetchFiles = async () => {
+  try {
+    const { data } = await filesApi.index();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 export default {
-  components: { ActionBar, IconTypeCommon, FilesList },
+  components: { ActionBar, FilesList },
+  setup() {
+    const files = ref([]);
 
-  mounted() {
-    this.fetchFiles();
-  },
-  data: () => ({
-    files: [],
-  }),
-  methods: {
-    async fetchFiles() {
-      try {
-        const { data } = await filesApi.index();
-        this.files = data;
-      } catch (error) {
-        console.log(error);
-      }
-    },
+    onMounted(async () => (files.value = await fetchFiles()));
+
+    return { files };
   },
 };
 </script>

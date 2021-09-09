@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { computed } from "vue";
 export default {
   props: {
     file: {
@@ -23,8 +24,8 @@ export default {
       required: true,
     },
   },
-  computed: {
-    iconFileType() {
+  setup(props) {
+    const iconFileType = computed(() => {
       let iconTypes = {
         "video/mp4": "icon-type-video",
         "image/jpeg": "icon-type-image",
@@ -35,14 +36,16 @@ export default {
         "application/vnd.ms-excel": "icon-type-excel",
         "application/pdf": "icon-type-pdf",
       };
-      return iconTypes[this.file.mimeType]
-        ? iconTypes[this.file.mimeType]
+      return iconTypes[props.file.mimeType]
+        ? iconTypes[props.file.mimeType]
         : "icon-type-common";
-    },
-    isValidImage() {
+    });
+    const isValidImage = computed(() => {
       let imageMimeTypes = ["image/jpg", "image/jpeg", "image/png"];
-      return imageMimeTypes.includes(this.file.mimeType) && this.file.url;
-    },
+      return imageMimeTypes.includes(props.file.mimeType) && !!props.file.url;
+    });
+
+    return { iconFileType, isValidImage };
   },
 };
 </script>
