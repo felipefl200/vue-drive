@@ -11,14 +11,22 @@
     <div class="container">
       <a class="navbar-brand" href="/"><strong>Vue</strong>Drive</a>
 
-      <form class="form-inline mt-2 mt-md-0">
-        <input
-          class="form-control"
-          type="text"
-          placeholder="Search in Drive"
-          aria-label="Search"
-        />
-      </form>
+      <div id="search-form"></div>
+      
     </div>
   </nav>
 </template>
+<script>
+import { ref, watchEffect } from "vue";
+import SearchForm from "./SearchForm.vue";
+export default {
+  setup() {
+    const q = ref("");
+    watchEffect(() => console.log("q", q.value));
+    return { q };
+  },
+  components: {
+    SearchForm,
+  },
+};
+</script>
