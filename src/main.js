@@ -1,5 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
+import Toast from "./components/toast/Toast.vue";
+import Modal from "./components/Modal.vue";
 import icons from "./components/icons/all";
 
 const app = createApp(App);
@@ -8,5 +10,12 @@ const app = createApp(App);
 for (const [key, value] of Object.entries(icons)) {
   app.component(key, value);
 }
+app.component("AppToast", Toast);
+app.component("AppModal", Modal);
+app.directive('focus', {
+  mounted(el) {
+    el.focus()
+  }
+})
 
 app.mount("#app");
