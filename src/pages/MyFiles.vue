@@ -4,6 +4,7 @@
       :selected-count="selectedItems.length"
       @remove="handleRemove"
       @rename="showModal = true"
+      @files-choosen="choosenFiles = $event"
     />
 
     <div class="d-flex justify-content-between align-items-center py-2">
@@ -14,7 +15,14 @@
     <teleport to="#search-form">
       <SearchForm v-model="q" />
     </teleport>
-    <FilesList :files="files" @select-change="handleSelectChange($event)" />
+
+    <DropZone
+      @files-dropped="choosenFiles = $event"
+      :showMessage="!files.length"
+    >
+      <FilesList :files="files" @select-change="handleSelectChange($event)" />
+    </DropZone>
+
     <AppToast
       :show="toast.show"
       :message="toast.message"
@@ -33,6 +41,7 @@
         @file-updated="handleFileUpdated($event)"
       />
     </AppModal>
+    <UploaderPopup :files="choosenFiles" />
   </div>
 </template>
 
@@ -43,6 +52,8 @@ import ActionBar from "../components/ActionBar.vue";
 import SortToggle from "../components/SortToggle.vue";
 import FilesList from "../components/files/FilesList.vue";
 import FileRenameForm from "../components/files/FileRenameForm.vue";
+import DropZone from "../components/uploader/file-chooser/DropZone.vue";
+import UploaderPopup from "../components/uploader/popup/UploaderPopup.vue";
 import { ref, reactive, watchEffect, toRef } from "vue";
 const fetchFiles = async (query) => {
   try {
@@ -65,7 +76,15 @@ const removeItem = async (item, files) => {
   }
 };
 export default {
-  components: { ActionBar, FilesList, SortToggle, SearchForm, FileRenameForm },
+  components: {
+    ActionBar,
+    FilesList,
+    SortToggle,
+    SearchForm,
+    FileRenameForm,
+    DropZone,
+    UploaderPopup,
+  },
   setup() {
     const files = ref([]);
     const query = reactive({
@@ -81,6 +100,8 @@ export default {
     });
 
     const showModal = ref(false);
+
+    const choosenFiles = ref([]);
 
     const handleSelectChange = (items) => {
       selectedItems.value = Array.from(items);
@@ -119,6 +140,7 @@ export default {
       toast,
       showModal,
       handleFileUpdated,
+      choosenFiles,
     };
   },
 };
